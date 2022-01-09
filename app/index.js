@@ -4,6 +4,13 @@ const mysql = require('mysql')
 // Expressのアプリケーション本体となるオブジェクトの作成
 const app = express()
 
+// CORS許可
+app.use(function (req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+    next();
+});
+
 
 // ルーティングの設定
 app.get('/', (req, res) => {

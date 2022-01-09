@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <!-- 開発用 -->
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+
+    <!-- リリース用 -->
+    <!-- <script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script> -->
+
+    <!-- chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+
+</head>
+
+<body>
+    <div class="testComponent"></div>
+
+    <canvas id="myChart" width="400" height="400"></canvas>
+
+
+
+
+    <script type="text/babel">
+        'use strict';
+        const { useState, componentDidMount } = React
+        let chartState;
+
+        //API のデータを格納するためのClass
+        class Sells {
+            constructor(storeName, sell) {
+                this.storeName = storeName;
+                this.sell = sell;
+            }
+        }
+
+        class SimpleChart {
+            static draw(data) {
+                const ctx = document.getElementById('myChart').getContext('2d');
+                const myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        // labels: ['a', 'b', 'c'],
+                        labels: data.map(e => e.storeName),
+                        datasets: [{
+                            label: '# of Votes',
+                            // data: [1, 2, 3],
+                            data: data.map(e => e.sell),
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+                return myChart;
+            }
+
+            static pushData({ chart, data }) {
+                chart.data.labels.push('pushed Data');
+                chart.data.datasets[0].data.push(data);
+
+                chart.update();
+            }
+
+            static update({ chart, data }) {
+                chart.data.labels = ['updated A', 'updated B', 'updated C'];
+                chart.data.datasets[0].data = data;
+
+                chart.update();
+            }
+        }
+
+        function test() {
+            console.log('test');
+        }
+
+
+
+        class TestComponent extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {
+                    count: []
+                };
+            }
+
+            //fetch後に画面を更新するためにこのライフサイクルを使用する
+            async componentDidMount() {
+                const res = await fetch('http://localhost:3000/');
+                const json = await res.json();
+
+                this.setState({
+                    count: json.map(e => new Sells(e.storeName, e.sell))
+                });
+                chartState = SimpleChart.draw(json);
+            }
+
+            // simpleChart();
+
+
+            render() {
+                return (<div>
+                    <p>You clicked {this.state.count.map(e => e.sell + '/')} times</p>
+                    <button onClick={() => SimpleChart.update({ chart: chartState, data: [180, 160, 220] })} >update</button>
+                    <button onClick={() => SimpleChart.pushData({ chart: chartState, data: 200 })} >add</button>
+                </div>)
+            }
+        }
+        ReactDOM.render(<TestComponent />, document.querySelector('.testComponent'));
+
+
+
+
+
+    </script>
+
+</body>
+
+</html>
