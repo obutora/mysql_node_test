@@ -1,5 +1,5 @@
 # ベースイメージを指定
-FROM node
+FROM node:8.9.4-alpine
 
 # node.js の環境変数を定義する
 # 本番環境では production

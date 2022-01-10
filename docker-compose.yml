@@ -17,12 +17,10 @@ services:
       - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf  # 設定ファイルをバインド
   nodejs:
     build: node
-    image: node:12
+    image: node-express-dev:1.0
     tty: true
     ports:
       - "3000:3000"
     volumes:
-      - ./app:/var/app
-      - /app/node_modules
-      - /app/dist
-    command: node /var/app/index.js
+      - ./app:/app
+    command: node /app/index.js
