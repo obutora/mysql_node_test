@@ -36,6 +36,29 @@ app.get('/', (req, res) => {
     });
 })
 
+app.get('/single', (req, res) => {
+    let data = 'empty'
+
+    const pool = mysql.createConnection({
+        host: 'db',
+        user: 'root',
+        password: 'password',
+        port: 3333,
+        database: 'dbname'
+    });
+
+    pool.query('select * from users where storeName = "storeB";', (err, results, fields) => {
+        if (err) {
+            console.error("user.js: sql execute error");
+        } else {
+            console.log("user.js: sql execute success");
+        }
+        console.log(results)
+        pool.end();
+        res.send(results);
+    });
+})
+
 // 待ち受けの開始
 app.listen(3000, () => {
     console.log('Start server port:3000')
