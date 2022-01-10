@@ -16,8 +16,8 @@ services:
       - ./mysql/init:/docker-entrypoint-initdb.d  # コンテナ起動時にSQLを発行
       - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf  # 設定ファイルをバインド
   nodejs:
-    build: node
-    image: node-express-dev:1.0
+    build: app
+    # image: node-express-dev:1.0
     tty: true
     ports:
       - "3000:3000"
