@@ -1,5 +1,21 @@
 version : '3'
 services:
+  https-portal:
+    image: steveltn/https-portal:1
+    ports:
+      - '80:80'
+      - '443:443'
+    restart: always
+    environment:
+      STAGE: local
+      DOMAINS: 'localhost -> http://nodejs:3000'
+      # DOMAINS: 'wordpress.example.com -> http://localhost:3000'
+      # STAGE: 'production' # Don't use production until staging works
+      # FORCE_RENEW: 'true'
+    links: 
+      -  nodejs
+    volumes: 
+      - ./https-portal-data:/var/lib/https-portal
   db:
     image: mysql:5.7.16
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --port 3333

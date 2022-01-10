@@ -116,7 +116,7 @@
 
             //fetch後に画面を更新するためにこのライフサイクルを使用する
             async componentDidMount() {
-                const res = await fetch('http://160.251.55.184:3000/');
+                const res = await fetch('https://localhost');
                 const json = await res.json();
 
                 this.setState({
