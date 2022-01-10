@@ -22,4 +22,6 @@ services:
       - "3000:3000"
     volumes:
       - ./app:/var/app
+      - /app/node_modules
+      - /app/dist
     command: node /var/app/index.js
